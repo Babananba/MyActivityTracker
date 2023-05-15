@@ -47,7 +47,7 @@ class LoginActivity : AppCompatActivity() {
                 finish()
             }
             else{
-                Toast.makeText(this, "Authentication failed. ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Authentication failed. ${task.exception?.message}", Toast.LENGTH_LONG).show()
             }
         }
     }

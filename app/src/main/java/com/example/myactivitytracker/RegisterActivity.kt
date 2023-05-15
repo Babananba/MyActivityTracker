@@ -33,7 +33,7 @@ class RegisterActivity : AppCompatActivity() {
         }
         
         if (password != confirmPassword){
-            Toast.makeText(this, "Passwords need to match!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Passwords need to match!", Toast.LENGTH_LONG).show()
             return 
         }
         
@@ -44,7 +44,7 @@ class RegisterActivity : AppCompatActivity() {
                 finish()
             }
             else{
-                Toast.makeText(this, "Authentication failed. ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Authentication failed. ${task.exception?.message}", Toast.LENGTH_LONG).show()
             }
         }
     }
