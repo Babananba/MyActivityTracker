@@ -126,4 +126,15 @@
         app:layout_constraintTop_toTopOf="parent"
         android:backgroundTint="@color/black" />
 
+    <Button
+        android:id="@+id/profileButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="25dp"
+        android:layout_marginTop="25dp"
+        android:text="Profile"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:backgroundTint="@color/black" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

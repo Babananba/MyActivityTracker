@@ -17,11 +17,19 @@ class StepsActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.logoutButton.setOnClickListener(this::onLogoutButton)
+        binding.profileButton.setOnClickListener(this::onProfileButton)
+
     }
 
     private fun onLogoutButton(view: View) {
         Firebase.auth.signOut()
         val intent = Intent(this, LoginActivity::class.java)
+        startActivity(intent)
+        finish()
+    }
+
+    private fun onProfileButton(view: View) {
+        val intent = Intent(this, ProfileActivity::class.java)
         startActivity(intent)
         finish()
     }

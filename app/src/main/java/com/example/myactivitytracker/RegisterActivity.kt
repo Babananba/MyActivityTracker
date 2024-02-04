@@ -39,7 +39,7 @@ class RegisterActivity : AppCompatActivity() {
         
         Firebase.auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
             if (task.isSuccessful){
-                val intent = Intent(this, LoginActivity::class.java)
+                val intent = Intent(this, ProfileActivity::class.java)
                 startActivity(intent)
                 finish()
             }
