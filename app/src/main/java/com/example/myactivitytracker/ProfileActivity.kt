@@ -24,7 +24,7 @@ class ProfileActivity : AppCompatActivity() {
         }
 
         Firebase.auth.uid?.let { userID ->
-            Database.base.getReference(userID).get().addOnCompleteListener { task ->
+            Database.base.getReference("$userID/profile").get().addOnCompleteListener { task ->
                 if (task.isSuccessful){
                     task.result.getValue<HashMap<String, String>>()?.let {
                         binding.heightEditText.setText(it["height"])
@@ -52,7 +52,7 @@ class ProfileActivity : AppCompatActivity() {
             val map = HashMap<String, String>()
             map["height"] = height
             map["weight"] = weight
-            Database.base.getReference(userID).setValue(map).addOnCompleteListener { task ->
+            Database.base.getReference("$userID/profile").setValue(map).addOnCompleteListener { task ->
                 if (task.isSuccessful){
                     val intent = Intent(this, StepsActivity::class.java)
                     startActivity(intent)
