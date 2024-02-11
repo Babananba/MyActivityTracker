@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import com.example.myactivitytracker.databinding.ActivityStepsBinding
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -24,11 +23,18 @@ class StepsActivity : AppCompatActivity() {
         stepsFragment = StepsFragment()
         mapFragment = MapFragment()
 
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.setCustomAnimations(
+            androidx.appcompat.R.anim.abc_grow_fade_in_from_bottom,
+            androidx.appcompat.R.anim.abc_shrink_fade_out_from_bottom,
+        )
+        transaction.add(R.id.mainFrameLayout, mapFragment)
+        transaction.add(R.id.mainFrameLayout, stepsFragment)
+        transaction.commit()
+
         binding.logoutButton.setOnClickListener(this::onLogoutButton)
         binding.switchButton.setOnClickListener (this::onSwitchButton)
         binding.profileButton.setOnClickListener(this::onProfileButton)
-
-        setFragment(stepsFragment)
     }
 
     private fun onLogoutButton(view: View) {
@@ -39,7 +45,14 @@ class StepsActivity : AppCompatActivity() {
     }
 
     private fun onSwitchButton(view: View) {
-        setFragment(if (showingMap) stepsFragment else mapFragment)
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.setCustomAnimations(
+            androidx.appcompat.R.anim.abc_grow_fade_in_from_bottom,
+            androidx.appcompat.R.anim.abc_shrink_fade_out_from_bottom,
+        )
+        transaction.hide(if (!showingMap) stepsFragment else mapFragment)
+        transaction.show(if (showingMap) stepsFragment else mapFragment)
+        transaction.commit()
         showingMap = !showingMap
     }
 
@@ -47,15 +60,5 @@ class StepsActivity : AppCompatActivity() {
         val intent = Intent(this, ProfileActivity::class.java)
         startActivity(intent)
         finish()
-    }
-
-    private fun setFragment(fragment: Fragment) {
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.setCustomAnimations(
-            androidx.appcompat.R.anim.abc_grow_fade_in_from_bottom,
-            androidx.appcompat.R.anim.abc_shrink_fade_out_from_bottom,
-        )
-        transaction.replace(R.id.mainFrameLayout, fragment)
-        transaction.commit()
     }
 }

@@ -9,13 +9,13 @@
               <type value="RUNNING_DEVICE_TARGET" />
               <deviceKey>
                 <Key>
-                  <type value="SERIAL_NUMBER" />
-                  <value value="ce01171129214e1002" />
+                  <type value="VIRTUAL_DEVICE_PATH" />
+                  <value value="C:\Users\baban\.android\avd\Piterfon_API_33.avd" />
                 </Key>
               </deviceKey>
             </Target>
           </runningDeviceTargetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-02-10T20:17:30.810190800Z" />
+          <timeTargetWasSelectedWithDropDown value="2024-02-11T20:30:31.890989700Z" />
         </State>
       </entry>
     </value>
