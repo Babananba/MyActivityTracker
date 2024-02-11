@@ -15,6 +15,8 @@ import com.example.myactivitytracker.databinding.FragmentStepsBinding
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import kotlin.math.max
 
 class StepsFragment : Fragment(), SensorEventListener {
@@ -35,7 +37,7 @@ class StepsFragment : Fragment(), SensorEventListener {
             currentStepCount = 0
             binding.stepCountTextView.text = "0"
             Firebase.auth.uid?.let { userID ->
-                Database.base.getReference("$userID/steps").setValue(0)
+                Database.base.getReference("$userID/steps/${getCurrentDate()}").setValue(0)
             }
             true
         }
@@ -43,10 +45,27 @@ class StepsFragment : Fragment(), SensorEventListener {
 
         Firebase.auth.uid?.let { userID ->
             Database.base.getReference("$userID/steps").get().addOnSuccessListener {
-                it.getValue<Int>()?.let {
-                    currentStepCount = it
-                    binding.stepCountTextView.text = "$it"
-
+                it.getValue<HashMap<String, Int>>()?.let {
+                    var containsToday = false
+                    var dates = it.toList().sortedByDescending { it.first }
+                    dates.find { it.first == getCurrentDate() }?.let {
+                        currentStepCount = it.second
+                        binding.stepCountTextView.text = "$currentStepCount"
+                        containsToday = true
+                    }
+                    if (containsToday){
+                        dates = dates.subList(1,dates.size)
+                    }
+                    if (dates.size >= 2){
+                        binding.yesterdayTitleTextView.text = "Koraci ${dates[0].first}"
+                        binding.yesterdayStepsTextView.text = "${dates[0].second}"
+                        binding.dayBeforeYesterdayTitleTextView.text = "Koraci ${dates[1].first}"
+                        binding.dayBeforeYesterdayStepsTextView.text = "${dates[1].second}"
+                    }
+                    else if(dates.size == 1){
+                        binding.yesterdayTitleTextView.text = "Koraci ${dates[0].first}"
+                        binding.yesterdayStepsTextView.text = "${dates[0].second}"
+                    }
                 }
             }
         }
@@ -77,6 +96,11 @@ class StepsFragment : Fragment(), SensorEventListener {
         return sharedPreferences?.getInt("key1", 0) ?: 0
     }
 
+    private fun getCurrentDate(): String{
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        return LocalDateTime.now().format(formatter)
+    }
+
     override fun onSensorChanged(event: SensorEvent?) {
         if(running){
             val totalStepCount = event!!.values[0].toInt()
@@ -87,7 +111,7 @@ class StepsFragment : Fragment(), SensorEventListener {
             if(currentStepCount - lastUpdatedSteps >= 10){
                 lastUpdatedSteps = currentStepCount
                 Firebase.auth.uid?.let { userID ->
-                    Database.base.getReference("$userID/steps").setValue(currentStepCount)
+                    Database.base.getReference("$userID/steps/${getCurrentDate()}").setValue(currentStepCount)
                 }
             }
         }
