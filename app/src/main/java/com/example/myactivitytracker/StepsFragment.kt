@@ -57,13 +57,13 @@ class StepsFragment : Fragment(), SensorEventListener {
                         dates = dates.subList(1,dates.size)
                     }
                     if (dates.size >= 2){
-                        binding.yesterdayTitleTextView.text = "Koraci ${dates[0].first}"
+                        binding.yesterdayTitleTextView.text = "Steps ${dates[0].first}"
                         binding.yesterdayStepsTextView.text = "${dates[0].second}"
-                        binding.dayBeforeYesterdayTitleTextView.text = "Koraci ${dates[1].first}"
+                        binding.dayBeforeYesterdayTitleTextView.text = "Steps ${dates[1].first}"
                         binding.dayBeforeYesterdayStepsTextView.text = "${dates[1].second}"
                     }
                     else if(dates.size == 1){
-                        binding.yesterdayTitleTextView.text = "Koraci ${dates[0].first}"
+                        binding.yesterdayTitleTextView.text = "Steps ${dates[0].first}"
                         binding.yesterdayStepsTextView.text = "${dates[0].second}"
                     }
                 }

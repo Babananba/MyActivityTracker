@@ -28,7 +28,7 @@
             android:layout_marginEnd="24dp"
             android:layout_marginTop="24dp"
             android:background="@drawable/edittext_background"
-            android:hint="Korisničko ime"
+            android:hint="Mail"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
             android:textColor="@android:color/black"
@@ -43,7 +43,7 @@
             android:layout_marginEnd="24dp"
             android:layout_marginTop="16dp"
             android:background="@drawable/edittext_background"
-            android:hint="Lozinka"
+            android:hint="Password"
             android:inputType="textPassword"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
@@ -57,7 +57,7 @@
             android:layout_below="@id/passwordEditText"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="24dp"
-            android:text="Prijava"
+            android:text="Login"
             android:backgroundTint="@color/black" />
 
         <Button

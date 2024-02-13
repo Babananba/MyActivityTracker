@@ -29,7 +29,7 @@
             android:layout_marginEnd="24dp"
             android:layout_marginTop="24dp"
             android:background="@drawable/edittext_background"
-            android:hint="Visina (cm)"
+            android:hint="Height (cm)"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
             android:textColor="@android:color/black"
@@ -45,7 +45,7 @@
             android:layout_marginEnd="24dp"
             android:layout_marginTop="24dp"
             android:background="@drawable/edittext_background"
-            android:hint="Masa (kg)"
+            android:hint="Weight (kg)"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
             android:textColor="@android:color/black"
@@ -59,7 +59,7 @@
             android:layout_below="@id/weightEditText"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="24dp"
-            android:text="Spremi"
+            android:text="Save"
             android:backgroundTint="@color/black" />
 
     </RelativeLayout>

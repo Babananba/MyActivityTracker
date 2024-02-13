@@ -28,7 +28,7 @@
             android:layout_marginEnd="24dp"
             android:layout_marginTop="24dp"
             android:background="@drawable/edittext_background"
-            android:hint="Korisničko ime"
+            android:hint="Username"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
             android:textColor="@android:color/black"
@@ -59,7 +59,7 @@
             android:layout_marginEnd="24dp"
             android:layout_marginTop="16dp"
             android:background="@drawable/edittext_background"
-            android:hint="Lozinka"
+            android:hint="Password"
             android:inputType="textPassword"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
@@ -75,7 +75,7 @@
             android:layout_marginEnd="24dp"
             android:layout_marginTop="16dp"
             android:background="@drawable/edittext_background"
-            android:hint="Ponovi lozinku"
+            android:hint="Repeat password"
             android:inputType="textPassword"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
@@ -88,7 +88,7 @@
             android:layout_below="@id/confirmPasswordEditText"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="24dp"
-            android:text="Registracija"
+            android:text="Register"
             android:backgroundTint="@color/black" />
 
         <Button
