@@ -60,22 +60,11 @@ class MapFragment : Fragment() {
         compass.enableCompass()
         mapView.overlays.add(compass)
 
-        if (ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                requireActivity(),
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                PERMISSIONS_REQUEST_ACCESS_LOCATION
-            )
-        } else {
-            fusedLocationClient.requestLocationUpdates(
-                locationRequest,
-                locationCallback,
-                null /* Looper */
-            )
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), PERMISSIONS_REQUEST_ACCESS_LOCATION)
+        }
+        else {
+            fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null)
         }
         return binding.root
     }

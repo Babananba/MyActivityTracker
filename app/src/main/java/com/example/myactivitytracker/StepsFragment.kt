@@ -25,7 +25,7 @@ class StepsFragment : Fragment(), SensorEventListener {
     private var sensorManager: SensorManager? = null
 
     private var running = false
-    private var currentStepCount = 0
+    private var steps = 0
     private var lastUpdatedSteps: Int = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -34,10 +34,11 @@ class StepsFragment : Fragment(), SensorEventListener {
             Toast.makeText(context, "Long tap to reset steps", Toast.LENGTH_SHORT).show()
         }
         binding.stepCountTextView.setOnLongClickListener{
-            currentStepCount = 0
+            steps = 0
             binding.stepCountTextView.text = "0"
             Firebase.auth.uid?.let { userID ->
                 Database.base.getReference("$userID/steps/${getCurrentDate()}").setValue(0)
+                lastUpdatedSteps = 0
             }
             true
         }
@@ -49,8 +50,8 @@ class StepsFragment : Fragment(), SensorEventListener {
                     var containsToday = false
                     var dates = it.toList().sortedByDescending { it.first }
                     dates.find { it.first == getCurrentDate() }?.let {
-                        currentStepCount = it.second
-                        binding.stepCountTextView.text = "$currentStepCount"
+                        steps = it.second
+                        binding.stepCountTextView.text = "$steps"
                         containsToday = true
                     }
                     if (containsToday){
@@ -84,16 +85,16 @@ class StepsFragment : Fragment(), SensorEventListener {
         }
     }
 
-    private fun saveSteps(count: Int){
-        val sharedPreferences = context?.getSharedPreferences("myPrefs", Context.MODE_PRIVATE)
+    private fun savePreviousSteps(count: Int){
+        val sharedPreferences = context?.getSharedPreferences(APP_PREFERENCES_NAME, Context.MODE_PRIVATE)
         val editor = sharedPreferences?.edit()
-        editor?.putInt("key1", count)
+        editor?.putInt(APP_PREVIOUS_STEPS_KEY, count)
         editor?.apply()
     }
 
-    private fun loadSteps(): Int{
-        val sharedPreferences = context?.getSharedPreferences("myPrefs", Context.MODE_PRIVATE)
-        return sharedPreferences?.getInt("key1", 0) ?: 0
+    private fun loadPreviousSteps(): Int? {
+        val sharedPreferences = context?.getSharedPreferences(APP_PREFERENCES_NAME, Context.MODE_PRIVATE)
+        return sharedPreferences?.getInt(APP_PREVIOUS_STEPS_KEY, 0)
     }
 
     private fun getCurrentDate(): String{
@@ -103,20 +104,27 @@ class StepsFragment : Fragment(), SensorEventListener {
 
     override fun onSensorChanged(event: SensorEvent?) {
         if(running){
-            val totalStepCount = event!!.values[0].toInt()
-            currentStepCount += max(totalStepCount - loadSteps(), 0)
-            saveSteps(totalStepCount)
-            binding.stepCountTextView.text = "$currentStepCount"
+            val previousSteps = loadPreviousSteps() ?: return
+            val currentSteps = event!!.values[0].toInt()
+            savePreviousSteps(currentSteps)
 
-            if(currentStepCount - lastUpdatedSteps >= 10){
-                lastUpdatedSteps = currentStepCount
+            steps += max(currentSteps - previousSteps, 0)
+            binding.stepCountTextView.text = "$steps"
+
+            if(steps - lastUpdatedSteps >= 10){
+                lastUpdatedSteps = steps
                 Firebase.auth.uid?.let { userID ->
-                    Database.base.getReference("$userID/steps/${getCurrentDate()}").setValue(currentStepCount)
+                    Database.base.getReference("$userID/steps/${getCurrentDate()}").setValue(steps)
                 }
             }
         }
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
+    }
+
+    companion object {
+        private const val APP_PREFERENCES_NAME = "MyActivityTrackerPreferences"
+        private const val APP_PREVIOUS_STEPS_KEY = "PreviousSteps"
     }
 }
