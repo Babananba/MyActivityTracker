@@ -25,6 +25,7 @@ class StepsFragment : Fragment(), SensorEventListener {
     private var sensorManager: SensorManager? = null
 
     private var running = false
+    private var ready = false
     private var steps = 0
     private var lastUpdatedSteps: Int = 0
 
@@ -45,29 +46,32 @@ class StepsFragment : Fragment(), SensorEventListener {
         sensorManager = context?.getSystemService(Context.SENSOR_SERVICE) as SensorManager
 
         Firebase.auth.uid?.let { userID ->
-            Database.base.getReference("$userID/steps").get().addOnSuccessListener {
-                it.getValue<HashMap<String, Int>>()?.let {
-                    var containsToday = false
-                    var dates = it.toList().sortedByDescending { it.first }
-                    dates.find { it.first == getCurrentDate() }?.let {
-                        steps = it.second
-                        binding.stepCountTextView.text = "$steps"
-                        containsToday = true
-                    }
-                    if (containsToday){
-                        dates = dates.subList(1,dates.size)
-                    }
-                    if (dates.size >= 2){
-                        binding.yesterdayTitleTextView.text = "Steps ${dates[0].first}"
-                        binding.yesterdayStepsTextView.text = "${dates[0].second}"
-                        binding.dayBeforeYesterdayTitleTextView.text = "Steps ${dates[1].first}"
-                        binding.dayBeforeYesterdayStepsTextView.text = "${dates[1].second}"
-                    }
-                    else if(dates.size == 1){
-                        binding.yesterdayTitleTextView.text = "Steps ${dates[0].first}"
-                        binding.yesterdayStepsTextView.text = "${dates[0].second}"
+            Database.base.getReference("$userID/steps").get().addOnCompleteListener {
+                if(it.isSuccessful){
+                    it.result.getValue<HashMap<String, Int>>()?.let {
+                        var containsToday = false
+                        var dates = it.toList().sortedByDescending { it.first }
+                        dates.find { it.first == getCurrentDate() }?.let {
+                            steps = it.second
+                            binding.stepCountTextView.text = "$steps"
+                            containsToday = true
+                        }
+                        if (containsToday){
+                            dates = dates.subList(1,dates.size)
+                        }
+                        if (dates.size >= 2){
+                            binding.yesterdayTitleTextView.text = "Steps ${dates[0].first}"
+                            binding.yesterdayStepsTextView.text = "${dates[0].second}"
+                            binding.dayBeforeYesterdayTitleTextView.text = "Steps ${dates[1].first}"
+                            binding.dayBeforeYesterdayStepsTextView.text = "${dates[1].second}"
+                        }
+                        else if(dates.size == 1){
+                            binding.yesterdayTitleTextView.text = "Steps ${dates[0].first}"
+                            binding.yesterdayStepsTextView.text = "${dates[0].second}"
+                        }
                     }
                 }
+                ready = true
             }
         }
         return binding.root
@@ -103,19 +107,21 @@ class StepsFragment : Fragment(), SensorEventListener {
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
-        if(running){
-            val previousSteps = loadPreviousSteps() ?: return
-            val currentSteps = event!!.values[0].toInt()
-            savePreviousSteps(currentSteps)
+        if(!running || !ready){
+            return
+        }
 
-            steps += max(currentSteps - previousSteps, 0)
-            binding.stepCountTextView.text = "$steps"
+        val previousSteps = loadPreviousSteps() ?: return
+        val currentSteps = event!!.values[0].toInt()
+        savePreviousSteps(currentSteps)
 
-            if(steps - lastUpdatedSteps >= 10){
-                lastUpdatedSteps = steps
-                Firebase.auth.uid?.let { userID ->
-                    Database.base.getReference("$userID/steps/${getCurrentDate()}").setValue(steps)
-                }
+        steps += max(currentSteps - previousSteps, 0)
+        binding.stepCountTextView.text = "$steps"
+
+        if(steps - lastUpdatedSteps >= 1){
+            lastUpdatedSteps = steps
+            Firebase.auth.uid?.let { userID ->
+                Database.base.getReference("$userID/steps/${getCurrentDate()}").setValue(steps)
             }
         }
     }
