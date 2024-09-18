@@ -62,14 +62,6 @@ class ProfileActivity : AppCompatActivity() {
                     Toast.makeText(this, "Failed to save information", Toast.LENGTH_LONG).show()
                 }
             }
-/*
-            Database.base.getReference("$userID/steps").setValue(420)
-            Database.base.getReference("$userID/steps").get().addOnSuccessListener {
-                it.getValue<Int>()?.let {
-
-                }
-            }
-*/
         }
     }
 }
